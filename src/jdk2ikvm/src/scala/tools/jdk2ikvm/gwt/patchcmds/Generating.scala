@@ -25,15 +25,6 @@ trait Generating extends Patching { this : Plugin =>
 
   private[Generating] class CallsiteUtils(patchtree: PatchTree) {
 
-    private val Throwable_getStackTrace = definitions.getMember(ThrowableClass, "getStackTrace")
-
-    def swallowing(tree: Tree, msg: String)(op: => Unit) {
-      try { op }
-      catch { case cce: ClassCastException =>
-        warning(tree.pos, msg + "\n" + asString(tree)) /* nodeToString(tree), more detailed */
-      }
-    }
-
     /** in case tree is a ClassDef explicitly listing csym in its extends clause, replace that reference to point to newBase */
     def rebaseFromTo(tree: Tree, csym: Symbol, newBase: String) = tree match {
       case cd: ClassDef if (!cd.symbol.isSynthetic) =>
@@ -186,8 +177,6 @@ trait Generating extends Patching { this : Plugin =>
   }
 
   /* ------------ individual patch-collectors ------------ */
-  
-  //TODO: Add patch collectors here
 
   private[Generating] class RemoveParallelCollections(patchtree: PatchTree) extends CallsiteUtils(patchtree) {
     
