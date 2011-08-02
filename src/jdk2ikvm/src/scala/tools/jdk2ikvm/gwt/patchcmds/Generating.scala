@@ -222,9 +222,8 @@ trait Generating extends Patching { this : Plugin =>
           patchtree.replace(range.start, range.end, "")
 
         //TODO(grek): Improve accuracy of a condition by checking type arguments and return type
-        case defdef: DefDef if parallDefNames contains defdef.name =>
-          val range = defdef.pos.asInstanceOf[RangePosition]
-          patchtree.replace(range.start, range.end, "")
+        case x: DefDef if parallDefNames contains x.name =>
+          removeDefDef(x)
 
         case _ => ()
       }
