@@ -77,7 +77,49 @@ abstract class JDK2IKVM
             "scala/collection/generic/ParSetFactory.scala",
             "scala/collection/generic/CanCombineFrom.scala",
             "scala/collection/generic/HasNewCombiner.scala",
-            "scala/collection/generic/Signalling.scala")
+            //depends on threads
+            "scala/collection/generic/Signalling.scala",
+            //depends on scala.io
+            "scala/collection/immutable/PagedSeq.scala",
+            "scala/concurrent/",
+            "scala/parallel/",
+            "scala/io/",
+            //TODO(grek): Check if we can provide our own implementation of properties handling that is IO-free, e.g. with hardcoded map of values
+            "scala/sys/BooleanProp.scala",
+            "scala/sys/Prop.scala",
+            "scala/sys/PropImpl.scala",
+            "scala/sys/ShutdownHookThread.scala",
+            "scala/sys/SystemProperties.scala",
+            "scala/sys/process/",
+            //soft/weak references, needed for structural types but we don't support them
+            "scala/ref/",
+            //we cannot exclude the whole reflect package, compiler depends on some classes and we need manifests
+            "scala/reflect/generic/",
+            "scala/reflect/api/",
+            "scala/reflect/Print.scala",
+            "scala/reflect/NameTransformer.scala",
+            //depends on reflections, find out if we can do something about it
+            "scala/Enumeration.scala",
+            //everything apart from XhmtlEntities and TokenTests, probably those two should be moved to some other package
+            "scala/xml/parsing/ConstructingHandler.scala",
+            "scala/xml/parsing/ConstructingParser.scala",
+            "scala/xml/parsing/DefaultMarkupHandler.scala",
+            "scala/xml/parsing/ExternalSources.scala",
+            "scala/xml/parsing/FactoryAdapter.scala",
+            "scala/xml/parsing/FatalError.scala",
+            "scala/xml/parsing/MarkupHandler.scala",
+            "scala/xml/parsing/MarkupParser.scala",
+            "scala/xml/parsing/MarkupParserCommon.scala",
+            "scala/xml/parsing/NoBindingFactoryAdapter.scala",
+            "scala/xml/parsing/ValidatingMarkupHandler.scala",
+            "scala/xml/parsing/XhtmlParser.scala",
+            "scala/xml/pull/XMLEventReader.scala",
+            "scala/xml/persistent/",
+            "scala/xml/factory/Binder.scala",
+            "scala/xml/factory/XMLLoader.scala",
+            //we are removing this because it depends on sys/Prop.scala, so it might be included again once props are being handled
+            "scala/util/control/NoStackTrace.scala",
+            "scala/util/parsing/")
         prefixes exists (x => relativeSourcePath startsWith x)
       }
 
