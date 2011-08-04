@@ -107,6 +107,7 @@ abstract class JDK2IKVM
             "scala/reflect/NameTransformer.scala",
             //depends on reflections, find out if we can do something about it
             "scala/Enumeration.scala",
+            "scala/xml/include/sax/",
             //everything apart from XhmtlEntities and TokenTests, probably those two should be moved to some other package
             "scala/xml/parsing/ConstructingHandler.scala",
             "scala/xml/parsing/ConstructingParser.scala",
