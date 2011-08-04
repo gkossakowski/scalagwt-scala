@@ -66,7 +66,14 @@ abstract class JDK2IKVM
       outputFile.getParentFile.mkdirs()
 
       val shouldSkip = {
-        val prefixes = Set("scala/collection/parallel",
+        val prefixes = Set(
+            "scala/App.scala",
+            "scala/Application.scala",
+            //TODO(grek): Provide GWT-specific replacement
+            "scala/Console.scala",
+            //depends on Weak/Soft refs
+            "scala/Symbol.scala",
+            "scala/collection/parallel",
             "scala/collection/Parallelizable.scala", 
             "scala/collection/CustomParallelizable.scala",
             "scala/collection/generic/GenericParCompanion.scala",
@@ -119,7 +126,8 @@ abstract class JDK2IKVM
             "scala/xml/factory/XMLLoader.scala",
             //we are removing this because it depends on sys/Prop.scala, so it might be included again once props are being handled
             "scala/util/control/NoStackTrace.scala",
-            "scala/util/parsing/")
+            "scala/util/parsing/",
+            "scala/util/Properties.scala")
         prefixes exists (x => relativeSourcePath startsWith x)
       }
 
