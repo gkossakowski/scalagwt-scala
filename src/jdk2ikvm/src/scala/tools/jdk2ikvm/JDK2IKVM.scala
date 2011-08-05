@@ -96,6 +96,7 @@ abstract class JDK2IKVM
             "scala/collection/generic/Signalling.scala",
             //depends on scala.io
             "scala/collection/immutable/PagedSeq.scala",
+            "scala/collection/mutable/WeakHashMap.scala",
             "scala/concurrent/",
             "scala/parallel/",
             "scala/io/",
@@ -119,6 +120,10 @@ abstract class JDK2IKVM
             "scala/runtime/MethodCache.scala",
             //depends on reflections, find out if we can do something about it
             "scala/Enumeration.scala",
+            //not sure what it is, but doesn't seem we need it 
+            "scala/text/",
+            //not sure what it is, but doesn't seem we need it
+            "scala/testing/",
             "scala/xml/include/sax/",
             //everything apart from XhmtlEntities and TokenTests, probably those two should be moved to some other package
             "scala/xml/parsing/ConstructingHandler.scala",
@@ -137,10 +142,17 @@ abstract class JDK2IKVM
             "scala/xml/persistent/",
             "scala/xml/factory/Binder.scala",
             "scala/xml/factory/XMLLoader.scala",
+            "scala/xml/factory/LoggedNodeFactory.scala",
             //we are removing this because it depends on sys/Prop.scala, so it might be included again once props are being handled
             "scala/util/control/NoStackTrace.scala",
             "scala/util/parsing/",
-            "scala/util/Properties.scala")
+            "scala/util/Properties.scala",
+            //depends on I/O (serialization)
+            "scala/util/Marshal.scala",
+            //depends on threads
+            "scala/util/DynamicVariable.scala",
+            //depends on Console
+            "scala/util/logging/")
         prefixes exists (x => relativeSourcePath startsWith x)
       }
       
