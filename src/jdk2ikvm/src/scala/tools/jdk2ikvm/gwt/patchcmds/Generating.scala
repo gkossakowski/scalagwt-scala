@@ -449,7 +449,7 @@ trait Generating extends Patching { this : Plugin =>
     
     private lazy val JavaIoPackage = definitions.getModule("java.io")
     private val JavaIoNames = Set("BufferedReader", "Reader", "InputStream", "InputStreamReader", "PrintStream", "OutputStream",
-        "File", "FileDescriptor", "FileInputStream", "FileOutputStream") map (newTermName)
+        "File", "FileDescriptor", "FileInputStream", "FileOutputStream", "ObjectOutputStream", "ObjectInputStream") map (newTermName)
     private lazy val JavaIoClasses = JavaIoNames map (x => definitions.getClass(JavaIoPackage.fullName + "." + x.toString))
     
     private lazy val JavaNioPackage = definitions.getModule("java.nio")
@@ -560,6 +560,76 @@ trait Generating extends Patching { this : Plugin =>
 
   }
   
+  /** Removes references to java.util.concurrent, java.util.Dictionary and java.util.Properties */
+  private[Generating] class RemoveCloneMethod(patchtree: PatchTree) extends CallsiteUtils(patchtree) {
+    
+    private val cloneName: Name = newTermName("clone")
+
+    def collectPatches(tree: Tree) {
+      tree match {
+//        case x: Apply if x.symbol.name == cloneName =>
+//          val range = x.pos.asInstanceOf[RangePosition]
+//          patchtree.replace(range.start, range.end-1, "sys.error(\"GWT doesn't support clone method.\")")
+        case x: DefDef if x.name == cloneName =>
+          if (x.symbol.nextOverriddenSymbol == definitions.Object_clone)
+            //since Object.clone doesn't exist we should remove override modifier
+            delOverrideModif(x)
+          val range = x.rhs.pos.asInstanceOf[RangePosition]
+          patchtree.replace(range.start, range.end, "{ sys.error(\"GWT doesn't support clone method.\") }\n")
+        case _ => ()
+      }
+    }
+
+  }
+  
+  /** Removes references to Console */
+  private[Generating] class CleanupStream(patchtree: PatchTree) extends CallsiteUtils(patchtree) {
+    
+    private lazy val StreamClass = definitions.getClass("scala.collection.immutable.Stream")
+    
+    private val defNames = Set("print") map (newTermName)
+
+    def collectPatches(tree: Tree) {
+      enclosingClass(StreamClass)(tree) {
+        case x: DefDef if defNames contains x.name =>
+          removeDefDef(x)
+      }
+    }
+
+  }
+  
+  /** Removes references to Console */
+  private[Generating] class CleanupHashTable(patchtree: PatchTree) extends CallsiteUtils(patchtree) {
+    
+    private lazy val HashTableClass = definitions.getClass("scala.collection.mutable.HashTable")
+    
+    private val defNames = Set("printSizeMap") map (newTermName)
+
+    def collectPatches(tree: Tree) {
+      enclosingClass(HashTableClass)(tree) {
+        case x: DefDef if defNames contains x.name =>
+          removeDefDef(x)
+      }
+    }
+
+  }
+  
+  /** Removes references to Console */
+  private[Generating] class CleanupFlatHashTable(patchtree: PatchTree) extends CallsiteUtils(patchtree) {
+    
+    private lazy val FlatHashTableClass = definitions.getClass("scala.collection.mutable.FlatHashTable")
+    
+    private val defNames = Set("printSizeMap") map (newTermName)
+
+    def collectPatches(tree: Tree) {
+      enclosingClass(FlatHashTableClass)(tree) {
+        case x: DefDef if defNames contains x.name =>
+          removeDefDef(x)
+      }
+    }
+
+  }
+  
   /* ------------------------ The main patcher ------------------------ */
 
   class RephrasingTraverser(patchtree: PatchTree) extends Traverser {
@@ -585,6 +655,14 @@ trait Generating extends Patching { this : Plugin =>
     private lazy val cleanupJavaConversions = new CleanupJavaConversions(patchtree)
     
     private lazy val cleanupJavaConverters = new CleanupJavaConverters(patchtree)
+    
+    private lazy val removeCloneMethod = new RemoveCloneMethod(patchtree)
+    
+    private lazy val cleanupStream = new CleanupStream(patchtree)
+    
+    private lazy val cleanupHashTable = new CleanupHashTable(patchtree)
+    
+    private lazy val cleanupFlatHashTable = new CleanupFlatHashTable(patchtree)
 
     override def traverse(tree: Tree): Unit = {
       
@@ -609,6 +687,14 @@ trait Generating extends Patching { this : Plugin =>
       cleanupJavaConversions collectPatches tree
       
       cleanupJavaConverters collectPatches tree
+      
+      removeCloneMethod collectPatches tree
+      
+      cleanupStream collectPatches tree
+      
+      cleanupHashTable collectPatches tree
+      
+      cleanupFlatHashTable collectPatches tree
       
       super.traverse(tree) // "longest patches first" that's why super.traverse after collectPatches(tree).
     }
