@@ -68,6 +68,7 @@ abstract class JDK2IKVM
       val replaced = {
         //replace it to use some classloader stuff or whatever
         val basePath = "/Users/grek/scalagwt/scalagwt-scala/src/jdk2ikvm/resources/replacements"
+        assert(new File(basePath).exists)
         val f = new File(basePath + "/" + relativeSourcePath)
         if (f.exists()) {
           FileUtil.write(new java.io.FileInputStream(f), outputFile)
