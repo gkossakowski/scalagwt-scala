@@ -124,6 +124,8 @@ abstract class JDK2IKVM
             "scala/text/",
             //not sure what it is, but doesn't seem we need it
             "scala/testing/",
+            //depends on org.xml.* stuff, depends on I/O, etc.
+            "scala/xml/package.scala",
             "scala/xml/include/sax/",
             //everything apart from XhmtlEntities and TokenTests, probably those two should be moved to some other package
             "scala/xml/parsing/ConstructingHandler.scala",
@@ -149,6 +151,8 @@ abstract class JDK2IKVM
             "scala/util/Properties.scala",
             //depends on I/O (serialization)
             "scala/util/Marshal.scala",
+            //depends on java.util.regex
+            "scala/util/matching/",
             //depends on threads
             "scala/util/DynamicVariable.scala",
             //depends on Console
