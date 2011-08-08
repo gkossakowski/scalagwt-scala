@@ -143,9 +143,7 @@ abstract class JDK2IKVM
             "scala/xml/parsing/XhtmlParser.scala",
             "scala/xml/pull/XMLEventReader.scala",
             "scala/xml/persistent/",
-            "scala/xml/factory/Binder.scala",
-            "scala/xml/factory/XMLLoader.scala",
-            "scala/xml/factory/LoggedNodeFactory.scala",
+            "scala/xml/factory/",
             //we are removing this because it depends on sys/Prop.scala, so it might be included again once props are being handled
             "scala/util/control/NoStackTrace.scala",
             "scala/util/parsing/",
