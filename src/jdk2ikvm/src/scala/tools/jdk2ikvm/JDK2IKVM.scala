@@ -80,8 +80,6 @@ abstract class JDK2IKVM
         val prefixes = Set(
             "scala/App.scala",
             "scala/Application.scala",
-            //TODO(grek): Provide GWT-specific replacement
-            "scala/Console.scala",
             "scala/collection/parallel",
             "scala/collection/Parallelizable.scala", 
             "scala/collection/CustomParallelizable.scala",
@@ -152,8 +150,6 @@ abstract class JDK2IKVM
             "scala/util/Marshal.scala",
             //depends on java.util.regex
             "scala/util/matching/",
-            //depends on threads
-            "scala/util/DynamicVariable.scala",
             //depends on Console
             "scala/util/logging/")
         prefixes exists (x => relativeSourcePath startsWith x)
